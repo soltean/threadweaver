@@ -1,25 +1,29 @@
-import com.so.junit.rules.Auction;
-import com.so.junit.rules.Bid;
-import com.so.junit.rules.Item;
+import com.so.junit.rules.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class AuctionTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private List<Item> buildItems() {
-        List<Item> items = new ArrayList<>();
+    @Rule
+    public ItemRule itemRule = new ItemRule();
+
+    /*private List<Item> buildItems() {
+        List<Item> items = new ArrayList<Item>();
         items.add(new Item("code1", 100));
         items.add(new Item("code2", 1500));
         return items;
+    }*/
+
+    private List<Item> buildItems() {
+        return itemRule.getItems();
     }
 
     @Test
