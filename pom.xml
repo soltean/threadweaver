@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.so</groupId>
-    <artifactId>junit.rules</artifactId>
+    <artifactId>assertj</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -25,6 +25,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <!-- use 2.5.0 for Java 7 projects -->
+            <version>3.5.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

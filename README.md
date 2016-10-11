@@ -1,3 +1,3 @@
-# junitrules
-This describes how to create a custom rule.
+# assertj
+Fluent assertions for junit.
 You need Java 8 to run this example.
