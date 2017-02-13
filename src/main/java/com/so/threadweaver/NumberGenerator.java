@@ -22,7 +22,6 @@ public class NumberGenerator {
                     return min + "" + counter.incrementAndGet();
                 } else {
                     counter.set(0);
-                    lock.set(false);
                     return timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
                 }
             } finally {
