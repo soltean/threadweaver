@@ -19,15 +19,21 @@ public class NumberGenerator {
         if (lock.compareAndSet(false, true)) {
             try {
                 if (timeMachine.getCurrentMinute() == min) {
-                    return min + "" + counter.incrementAndGet();
+                    String a = min + "" + counter.incrementAndGet();
+                    System.out.println(a);
+                    return a;
                 } else {
                     counter.set(0);
-                    return timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
+                    String a = timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
+                    System.out.println(a);
+                    return a;
                 }
             } finally {
                 lock.set(false);
             }
         }
-        return min + "" + counter.incrementAndGet();
+        String a = min + "" + counter.incrementAndGet();
+        System.out.println(a);
+        return a;
     }
 }
