@@ -1,39 +1,37 @@
 package com.so.threadweaver;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class NumberGenerator {
 
-    private AtomicInteger counter = new AtomicInteger(0);
-    private AtomicBoolean lock = new AtomicBoolean(false);
+	private AtomicInteger counter = new AtomicInteger(0);
+	private Lock reentrantLock = new ReentrantLock();
+	private volatile boolean counterReset;
 
-    private final TimeMachine timeMachine;
+	private final TimeMachine timeMachine;
 
-    public NumberGenerator(TimeMachine timeMachine) {
-        this.timeMachine = timeMachine;
-    }
+	public NumberGenerator(TimeMachine timeMachine) {
+		this.timeMachine = timeMachine;
+	}
 
-    public String nextNumber() {
-        int min = timeMachine.getCurrentMinute();
-        if (lock.compareAndSet(false, true)) {
-            try {
-                if (timeMachine.getCurrentMinute() == min) {
-                    String a = min + "" + counter.incrementAndGet();
-                    System.out.println(a);
-                    return a;
-                } else {
-                    counter.set(0);
-                    String a = timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
-                    System.out.println(a);
-                    return a;
-                }
-            } finally {
-                lock.set(false);
-            }
-        }
-        String a = min + "" + counter.incrementAndGet();
-        System.out.println(a);
-        return a;
-    }
+	public String nextNumber() {
+		int min = timeMachine.getCurrentMinute();
+
+		if (timeMachine.getCurrentMinute() == min) {
+			return min + "" + counter.getAndIncrement();
+		} else {
+			try {
+				reentrantLock.lock();
+				if (!counterReset) {
+					counter.set(0);
+					counterReset = true;
+				}
+				return timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
+			} finally {
+				reentrantLock.unlock();
+			}
+		}
+	}
 }

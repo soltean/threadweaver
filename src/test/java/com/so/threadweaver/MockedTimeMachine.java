@@ -17,6 +17,8 @@ public class MockedTimeMachine {
         //see it has changed = 2
         expect(timeMachine.getCurrentMinute()).andReturn(2);
 
+        expect(timeMachine.getCurrentMinute()).andReturn(2);
+
         //the second thread enters
         //      int min = timeMachine.getCurrentMinute();
         // and gets the minute = 1
