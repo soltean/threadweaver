@@ -1,5 +1,6 @@
 package com.so.threadweaver;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -7,8 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class NumberGenerator {
 
 	private AtomicInteger counter = new AtomicInteger(0);
-	private Lock reentrantLock = new ReentrantLock();
-	private volatile boolean counterReset;
+	private AtomicBoolean lock = new AtomicBoolean(false);
 
 	private final TimeMachine timeMachine;
 
@@ -18,20 +18,18 @@ public class NumberGenerator {
 
 	public String nextNumber() {
 		int min = timeMachine.getCurrentMinute();
-
-		if (timeMachine.getCurrentMinute() == min) {
-			return min + "" + counter.getAndIncrement();
-		} else {
+		if (lock.compareAndSet(false, true)) {
 			try {
-				reentrantLock.lock();
-				if (!counterReset) {
+				if (timeMachine.getCurrentMinute() == min) {
+					return min + "" + counter.incrementAndGet();
+				} else {
 					counter.set(0);
-					counterReset = true;
+					return timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
 				}
-				return timeMachine.getCurrentMinute() + "" + counter.incrementAndGet();
 			} finally {
-				reentrantLock.unlock();
+				lock.set(false);
 			}
 		}
+		return min + "" + counter.incrementAndGet();
 	}
 }
